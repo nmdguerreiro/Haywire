@@ -21,7 +21,8 @@ int hw_route_compare_method(char *url, char* route)
     char prefix;
     int match = 0;
     
-    strncpy(route_key, route, 2048);
+    strncpy(route_key, route, sizeof(route_key));
+    route_key[sizeof(route_key)-1] = '\0';
     
     route_token = strtok_r(route_key, "/", &route_token_ptr);
     request_token = strtok_r(url, "/", &request_token_ptr);
@@ -32,7 +33,7 @@ int hw_route_compare_method(char *url, char* route)
             break;
             
         prefix = *route_token;
-        if (strlen(route_token) == 1 && !strcmp(route_token, "*")) {
+        if (!strcmp(route_token, "*")) {
            // wildcard support: any route fragment marked with '*' matches the corresponding url fragment
            equal = 1;
         }
