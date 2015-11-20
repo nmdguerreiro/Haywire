@@ -21,7 +21,7 @@ int hw_route_compare_method(char *url, char* route)
     char prefix;
     int match = 0;
     
-    strcpy(route_key, route);
+    strncpy(route_key, route, 2048);
     
     route_token = strtok_r(route_key, "/", &route_token_ptr);
     request_token = strtok_r(url, "/", &request_token_ptr);
@@ -30,9 +30,13 @@ int hw_route_compare_method(char *url, char* route)
     {
         if (route_token == NULL || request_token == NULL)
             break;
-        
+            
         prefix = *route_token;
-        if (prefix == '$')
+        if (strlen(route_token) == 1 && !strcmp(route_token, "*")) {
+           // wildcard support: any route fragment marked with '*' matches the corresponding url fragment
+           equal = 1;
+        }
+        else if (prefix == '$')
         {
             // TODO: Do request URL variable substitution.
         }
